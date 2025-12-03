@@ -7,18 +7,14 @@ export class Patient {
   id: string;
 
   @Column()
-  name: string;
+  fullname: string;
 
   @Column()
   age: number;
 
   @Column()
-  medical_info: string;
+  symptoms: string;
 
-  // Relation sécurisée
-  @ManyToOne(() => User, user => user.patients, { onDelete: 'CASCADE' })
-  doctor: User;
-
-  @Column()
-  doctorId: string; // Obligatoire pour RLS
+  @ManyToOne(() => User, (user) => user.patients, { onDelete: 'CASCADE' })
+  owner: User;
 }

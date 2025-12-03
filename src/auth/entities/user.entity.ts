@@ -12,6 +12,7 @@ export class User {
   @Column()
   password: string; // Hashé + salé
 
-  @OneToMany(() => Patient, patient => patient.doctor)
+  @OneToMany(() => Patient, (patient) => patient.owner)
   patients: Patient[];
+
 }
