@@ -15,6 +15,7 @@ export class PatientsService {
   ) {}
 
   async create(dto: CreatePatientDto, user: User) {
+    // inutile 
     await this.dataSource.query(
       `SET app.current_user_id = '${user.id}';`,
     );
@@ -28,10 +29,13 @@ export class PatientsService {
   }
 
   async getMine(user: User) {
+    // inutile 
     await this.dataSource.query(
       `SET app.current_user_id = '${user.id}';`,
     );
 
-    return this.patientRepo.find();
+    return this.patientRepo.find({
+      where: { owner: { id: user.id } },
+    });
   }
 }

@@ -25,7 +25,7 @@ export class AuthService {
 
     const user = this.userRepo.create({
       email: dto.email,
-      password: hash, // champ conforme à ton entité
+      password: hash, 
     });
 
     await this.userRepo.save(user);
