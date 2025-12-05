@@ -1,14 +1,15 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsObject, IsString } from 'class-validator';
 
 export class CreatePatientDto {
-  @IsString()
+  @IsObject()
   @IsNotEmpty()
-  fullname: string;
-
-  @IsNumber()
-  age: number;
+  kdf: any;
 
   @IsString()
   @IsNotEmpty()
-  symptoms: string;
+  nonce: string;
+
+  @IsString()
+  @IsNotEmpty()
+  ciphertext: string;
 }
