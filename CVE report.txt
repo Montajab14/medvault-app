@@ -1,0 +1,40 @@
+Définition : Une Common Vulnerability and Exposure (CVE) est une vulnérabilité identifiée dans un logiciel ou un matériel 
+qui peut être exploitée pour compromettre la sécurité d'un système.
+
+_________________________________________________________________________________________________________________
+
+MAROUF-Montajab@DESKTOP-PCGTQ5T MINGW64 ~/Desktop/BAC+3/medvault
+$ npm audit
+# npm audit report
+
+body-parser  2.2.0
+Severity: moderate
+body-parser is vulnerable to denial of service when url encoding is used - https://github.com/advisories/GHSA-wqch-xfxh-vrr4
+fix available via `npm audit fix`
+node_modules/body-parser
+
+**1 moderate severity vulnerability**
+
+To address all issues, run:
+  npm audit fix
+
+_________________________________________________________________________________________________________________
+
+  Détails sur body-parser 2.2.0 
+  Vulnérable à une attaque par déni de service en raison d’une gestion inefficace des corps de 
+  requêtes encodés en URL contenant un très grand nombre de paramètres. Un attaquant peut envoyer des charges utiles 
+  comprenant des milliers de paramètres tout en restant dans la limite par défaut de 100 Ko de taille de requête, ce qui 
+  entraîne une consommation élevée du CPU et de la mémoire.
+
+_________________________________________________________________________________________________________________
+
+Constat : "npm audit fix" a réglé le problème :
+MAROUF-Montajab@DESKTOP-PCGTQ5T MINGW64 ~/Desktop/BAC+3/medvault
+$ npm audit fix
+
+changed 2 packages, and audited 263 packages in 2s
+
+55 packages are looking for funding
+  run `npm fund` for details
+
+**found 0 vulnerabilities**
