@@ -1,0 +1,13 @@
+react-dom_client.js?v=1e4cd859:20103 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+Register.tsx:19 DÉBUT REGISTER
+
+Register.tsx:23 Salt généré: Uint8Array(16) [136, 45, 105, 19, 65, 180, 217, 163, 75, 175, 164, 19, 96, 120, 231, 149, 
+buffer: ArrayBuffer(16), byteLength: 16, byteOffset: 0, length: 16, Symbol(Symbol.toStringTag): 'Uint8Array']
+
+Register.tsx:26 Master Key dérivée: Uint8Array(32) [26, 58, 168, 87, 74, 86, 70, 196, 29, 219, 241, 210, 64, 18, 238, 147, 
+57, 60, 65, 68, 170, 171, 128, 181, 244, 169, 236, 246, 202, 159, 245, 87, buffer: ArrayBuffer(32), byteLength: 32, 
+byteOffset: 0, length: 32, Symbol(Symbol.toStringTag): 'Uint8Array']
+
+Register.tsx:34 Données à chiffrer: {nom: 'Dupont', prenom: 'Jean', age: 50, symptomes: 'Mal de tête'}
+
+Register.tsx:37 Données chiffrées (Base64): qydUXnivD/HlN+xio5Fe3ZRwG/EcbW1ulbjXKCmPm5SqdugxCk...

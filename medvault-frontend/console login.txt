@@ -1,0 +1,15 @@
+Login.tsx:19 DÉBUT LOGIN
+
+Login.tsx:25 Réponse backend: {access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsI…jM2fQ.D5Tn72pnqQ3TYvSG7zJyl
+to_Q-_U14Ky_DFa5fz6cdE', salt: 'XP3+inoFwWYM0nkZ5o2fCQ==', encryptedData: 'cP4wGKRScRNgite+xxmjLNKVz4fSalNiDVb0fO3sR9RQZq1Wy
+J…Po09XY4HulhVTEAP2RAbx/MXCyxrYHYcYebD6SUMVBuvULS4='}
+
+
+Login.tsx:29 Salt récupéré: Uint8Array(16) [92, 253, 254, 138, 122, 5, 193, 102, 12, 210, 121, 25, 230, 141, 159, 9, 
+buffer: ArrayBuffer(16), byteLength: 16, byteOffset: 0, length: 16, Symbol(Symbol.toStringTag): 'Uint8Array']
+
+Login.tsx:33 Master Key recréée: Uint8Array(32) [243, 130, 227, 225, 221, 123, 188, 62, 183, 203, 177, 156, 246, 197, 239, 
+206, 110, 242, 85, 192, 42, 38, 200, 163, 29, 50, 204, 209, 112, 190, 177, 102, buffer: ArrayBuffer(32), byteLength: 32, 
+byteOffset: 0, length: 32, Symbol(Symbol.toStringTag): 'Uint8Array']
+
+Login.tsx:37 Données déchiffrées: {nom: 'Jean', prenom: 'Dupon', age: 45, symptomes: 'Mal de tête'}
