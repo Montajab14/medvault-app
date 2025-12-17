@@ -5,7 +5,26 @@ declare global {
 }
 
 /**
- * 1. Génération d'un salt sûr (16 bytes)
+ * Hashage du password pour authentification (côté frontend)
+ */
+export async function hashPasswordForAuth(password: string): Promise<string> {
+  const authSalt = generateSalt();
+  
+  const result = await window.argon2.hash({
+    pass: password,
+    salt: authSalt,
+    time: 3,
+    mem: 65536,
+    parallelism: 1,
+    hashLen: 32,
+    type: window.argon2.ArgonType.Argon2id,
+  });
+ 
+  return result.hashHex as string;
+}
+
+/**
+ * 1. Génération d'un salt cryptographiquement sûr (16 bytes)
  */
 export function generateSalt(): Uint8Array {
   return crypto.getRandomValues(new Uint8Array(16));

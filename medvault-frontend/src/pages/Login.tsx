@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { deriveMasterKey, decryptData, base64ToSalt } from '../crypto/argon';
+import { deriveMasterKey, decryptData, base64ToSalt, hashPasswordForAuth } from '../crypto/argon';
 import { loginPatient } from '../api/patient';
 
 interface LoginProps {
@@ -16,47 +16,50 @@ export default function Login({ onLogin }: LoginProps) {
   const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
-    console.log('DÉBUT LOGIN');
-    setLoading(true);
+  console.log('DÉBUT LOGIN');
+  setLoading(true);
 
-    try {
-      // 1. Appel API pour récupérer salt + encryptedData
-      const res = await loginPatient({ email, password });
-      console.log('Réponse backend:', res.data);
+  try {
+    // 1. NOUVEAU : Hash du password côté frontend
+    const passwordHash = await hashPasswordForAuth(password);
+    console.log('Password hashé:', passwordHash.substring(0, 20) + '...');
 
-      // 2. Récupération du salt (converti de Base64 → Uint8Array)
-      const salt = base64ToSalt(res.data.salt);
-      console.log('Salt récupéré:', salt);
+    // 2. Appel API avec le hash (pas le password en clair)
+    const res = await loginPatient({ email, passwordHash });
+    console.log('Réponse backend:', res.data);
 
-      // 3. Dérivation de la Master Key (même process qu'au register)
-      const masterKey = await deriveMasterKey(password, salt);
-      console.log('Master Key recréée:', masterKey);
+    // 3. Récupération du salt pour déchiffrement
+    const salt = base64ToSalt(res.data.salt);
+    console.log('Salt récupéré:', salt);
 
-      // 4. Déchiffrement des données avec AES-GCM
-      const decryptedData = await decryptData(res.data.encryptedData, masterKey);
-      console.log('Données déchiffrées:', decryptedData);
+    // 4. Dérivation Master Key (avec password original, pas le hash !)
+    const masterKey = await deriveMasterKey(password, salt);
+    console.log('Master Key recréée:', masterKey);
 
-      // 5. Transmission des données au Dashboard
-      onLogin({
-        email,
-        patientData: decryptedData,
-        masterKey, // Garder en mémoire pour futures opérations
-      });
+    // 5. Déchiffrement
+    const decryptedData = await decryptData(res.data.encryptedData, masterKey);
+    console.log('Données déchiffrées:', decryptedData);
 
-    } catch (err: any) {
-      console.error('Erreur login:', err);
-      
-      if (err.response?.status === 401) {
-        alert('Email ou mot de passe incorrect');
-      } else if (err.message?.includes('decrypt')) {
-        alert('Mot de passe incorrect (déchiffrement échoué)');
-      } else {
-        alert('Erreur de connexion');
-      }
-    } finally {
-      setLoading(false);
+    onLogin({
+      email,
+      patientData: decryptedData,
+      masterKey,
+    });
+
+  } catch (err: any) {
+    console.error('Erreur login:', err);
+    
+    if (err.response?.status === 401) {
+      alert('Email ou mot de passe incorrect');
+    } else if (err.message?.includes('decrypt')) {
+      alert('Mot de passe incorrect (déchiffrement échoué)');
+    } else {
+      alert('Erreur de connexion');
     }
+  } finally {
+    setLoading(false);
   }
+}
 
   return (
     <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>

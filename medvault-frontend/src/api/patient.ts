@@ -5,10 +5,18 @@ const api = axios.create({
   withCredentials: true,
 });
 
-export function registerPatient(payload: any) {
+export function registerPatient(payload: {
+  email: string;
+  passwordHash: string;
+  salt: string;
+  encryptedData: string;
+}) {
   return api.post('/auth/register', payload);
 }
 
-export function loginPatient(payload: any) {
+export function loginPatient(payload: { 
+  email: string; 
+  passwordHash: string; 
+}) {
   return api.post('/auth/login', payload);
 }

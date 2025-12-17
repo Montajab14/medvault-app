@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { generateSalt, deriveMasterKey, encryptData, saltToBase64 } from '../crypto/argon';
+import { generateSalt, deriveMasterKey, encryptData, saltToBase64, hashPasswordForAuth } from '../crypto/argon';
 import { registerPatient } from '../api/patient';
 
 interface RegisterProps {
@@ -18,62 +18,70 @@ export default function Register({ onRegisterSuccess }: RegisterProps) {
   const [age, setAge] = useState('');
   const [symptomes, setSymptomes] = useState('');
 
-  async function handleRegister() {
-    console.log('DÉBUT REGISTER');
+async function handleRegister() {
+  console.log('DÉBUT REGISTER');
 
-    if (password !== confirmPassword) {
-      alert('Les mots de passe ne correspondent pas');
-      return;
-    }
-
-    if (password.length < 8) {
-      alert('Le mot de passe doit contenir au moins 8 caractères');
-      return;
-    }
-
-    try {
-      const salt = generateSalt();
-      console.log('Salt généré:', salt);
-
-      const masterKey = await deriveMasterKey(password, salt);
-      console.log('Master Key dérivée:', masterKey);
-
-      const patientData = {
-        nom,
-        prenom,
-        age: parseInt(age),
-        symptomes,
-      };
-      console.log('Données à chiffrer:', patientData);
-
-      const encryptedData = await encryptData(patientData, masterKey);
-      console.log('Données chiffrées (Base64):', encryptedData.substring(0, 50) + '...');
-
-      await registerPatient({
-        email,
-        password, 
-        salt: saltToBase64(salt),
-        encryptedData,
-      });
-
-      alert('Patient enregistré ! Données E2EE sécurisées.');
-      
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-      setNom('');
-      setPrenom('');
-      setAge('');
-      setSymptomes('');
-
-      onRegisterSuccess();
-
-    } catch (err) {
-      console.error('Erreur register:', err);
-      alert('Erreur lors de l\'inscription');
-    }
+  if (password !== confirmPassword) {
+    alert('Les mots de passe ne correspondent pas');
+    return;
   }
 
+  if (password.length < 8) {
+    alert('Le mot de passe doit contenir au moins 8 caractères');
+    return;
+  }
+
+  try {
+    // 1. Salt pour Master Key (chiffrement E2EE)
+    const salt = generateSalt();
+    console.log('Salt généré (E2EE):', salt);
+
+    // 2. Master Key pour chiffrement
+    const masterKey = await deriveMasterKey(password, salt);
+    console.log('Master Key dérivée:', masterKey);
+
+    // 3. Données à chiffrer
+    const patientData = {
+      nom,
+      prenom,
+      age: parseInt(age),
+      symptomes,
+    };
+    console.log('Données à chiffrer:', patientData);
+
+    // 4. Chiffrement AES-GCM
+    const encryptedData = await encryptData(patientData, masterKey);
+    console.log('Données chiffrées (Base64):', encryptedData.substring(0, 50) + '...');
+
+    // Hash du password pour authentification 
+    const passwordHash = await hashPasswordForAuth(password);
+    console.log('Password hashé (auth):', passwordHash.substring(0, 20) + '...');
+
+
+    await registerPatient({
+      email,
+      passwordHash, 
+      salt: saltToBase64(salt),
+      encryptedData,
+    });
+
+    alert('Patient enregistré ! Données E2EE sécurisées.');
+    
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setNom('');
+    setPrenom('');
+    setAge('');
+    setSymptomes('');
+
+    onRegisterSuccess();
+
+  } catch (err) {
+    console.error('Erreur register:', err);
+    alert('Erreur lors de l\'inscription');
+  }
+}
   return (
     <div style={{ padding: '20px', maxWidth: '500px', margin: '0 auto' }}>
       <h2>Inscription Patient - MedVault</h2>

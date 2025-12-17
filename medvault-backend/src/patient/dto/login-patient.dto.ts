@@ -7,5 +7,5 @@ export class LoginPatientDto {
 
   @IsString()
   @IsNotEmpty()
-  password: string; 
+  passwordHash: string; 
 }

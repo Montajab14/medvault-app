@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PatientService } from '../patient/patient.service';
-import * as argon2 from 'argon2';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +11,7 @@ export class AuthService {
 
   async register(payload: {
     email: string;
-    password: string;
+    passwordHash: string;
     salt: string;
     encryptedData: string;
   }) {
@@ -21,12 +20,11 @@ export class AuthService {
       throw new ConflictException('Email déjà utilisé');
     }
 
-    // Hash du password avec Argon2 côté serveur
-    const passwordHash = await argon2.hash(payload.password);
-
+    // Le passwordHash est déjà hashé côté frontend
+    // On le stocke directement
     const patient = await this.patientService.create({
       email: payload.email,
-      passwordHash,
+      passwordHash: payload.passwordHash,
       salt: payload.salt,
       encryptedData: payload.encryptedData,
     });
@@ -37,15 +35,14 @@ export class AuthService {
     };
   }
 
-  async login(payload: { email: string; password: string }) {
+  async login(payload: { email: string; passwordHash: string }) {
     const patient = await this.patientService.findByEmail(payload.email);
     if (!patient) {
       throw new UnauthorizedException('Email ou mot de passe incorrect');
     }
 
-    // Vérification du password avec Argon2
-    const valid = await argon2.verify(patient.passwordHash, payload.password);
-    if (!valid) {
+    // Comparaison directe des hashs
+    if (patient.passwordHash !== payload.passwordHash) {
       throw new UnauthorizedException('Email ou mot de passe incorrect');
     }
 
