@@ -54,7 +54,7 @@ async function handleRegister() {
     console.log('Données chiffrées (Base64):', encryptedData.substring(0, 50) + '...');
 
     // Hash du password pour authentification 
-    const passwordHash = await hashPasswordForAuth(password);
+    const passwordHash = await hashPasswordForAuth(password, email);
     console.log('Password hashé (auth):', passwordHash.substring(0, 20) + '...');
 
 

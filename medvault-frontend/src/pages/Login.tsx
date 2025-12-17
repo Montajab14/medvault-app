@@ -20,11 +20,11 @@ export default function Login({ onLogin }: LoginProps) {
   setLoading(true);
 
   try {
-    // 1. NOUVEAU : Hash du password côté frontend
-    const passwordHash = await hashPasswordForAuth(password);
+    // 1. Hash du password côté frontend
+    const passwordHash = await hashPasswordForAuth(password, email);
     console.log('Password hashé:', passwordHash.substring(0, 20) + '...');
 
-    // 2. Appel API avec le hash (pas le password en clair)
+    // 2. Appel API avec le hash 
     const res = await loginPatient({ email, passwordHash });
     console.log('Réponse backend:', res.data);
 

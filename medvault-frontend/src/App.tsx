@@ -1,22 +1,32 @@
-import axios from 'axios';
+import { useState } from 'react';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
-const api = axios.create({
-  baseURL: 'http://localhost:3000',
-  withCredentials: true,
-});
+export default function App() {
+  const [page, setPage] = useState<'login' | 'register'>('login');
+  const [user, setUser] = useState<any>(null);
 
-export function registerPatient(payload: {
-  email: string;
-  passwordHash: string;
-  salt: string;
-  encryptedData: string;
-}) {
-  return api.post('/auth/register', payload);
-}
+  if (user) return (
+    <div style={{ padding: 20 }}>
+      <h2>Bienvenue, {user.email}</h2>
+      <pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(user.patientData, null, 2)}</pre>
+      <button onClick={() => setUser(null)}>Se déconnecter</button>
+    </div>
+  );
 
-export function loginPatient(payload: { 
-  email: string; 
-  passwordHash: string; 
-}) {
-  return api.post('/auth/login', payload);
+  return (
+    <div>
+      <header style={{ display: 'flex', gap: 10, padding: 16 }}>
+        <button onClick={() => setPage('login')}>Connexion</button>
+        <button onClick={() => setPage('register')}>Inscription</button>
+      </header>
+      <main>
+        {page === 'login' ? (
+          <Login onLogin={(data) => setUser(data)} />
+        ) : (
+          <Register onRegisterSuccess={() => setPage('login')} />
+        )}
+      </main>
+    </div>
+  );
 }

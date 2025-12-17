@@ -1,0 +1,3 @@
+Toutes les modifications apporté ont cassé le CSS du site. A corriger.
+
+Le site en lui même fonctionne et le hashage se fait bien en front avec argon2.

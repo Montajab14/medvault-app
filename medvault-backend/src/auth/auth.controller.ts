@@ -11,7 +11,7 @@ export class AuthController {
   async register(@Body() dto: CreatePatientDto) {
     return this.authService.register({
       email: dto.email,
-      password: dto.password,
+      passwordHash: dto.passwordHash, 
       salt: dto.salt,
       encryptedData: dto.encryptedData,
     });
@@ -21,7 +21,7 @@ export class AuthController {
   async login(@Body() dto: LoginPatientDto) {
     return this.authService.login({
       email: dto.email,
-      password: dto.password,
+      passwordHash: dto.passwordHash, 
     });
   }
 }

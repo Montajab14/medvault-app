@@ -6,9 +6,18 @@ declare global {
 
 /**
  * Hashage du password pour authentification (côté frontend)
+ * Utilise l'email comme salt pour être reproductible
  */
-export async function hashPasswordForAuth(password: string): Promise<string> {
-  const authSalt = generateSalt();
+export async function hashPasswordForAuth(password: string, email: string): Promise<string> {
+  // Créer un salt déterministe à partir de l'email
+  const encoder = new TextEncoder();
+  const emailBytes = encoder.encode(email);
+  
+  // Pad ou truncate à 16 bytes
+  const authSalt = new Uint8Array(16);
+  for (let i = 0; i < 16; i++) {
+    authSalt[i] = emailBytes[i % emailBytes.length] || 0;
+  }
   
   const result = await window.argon2.hash({
     pass: password,

@@ -7,7 +7,7 @@ export class CreatePatientDto {
 
   @IsString()
   @IsNotEmpty()
-  password: string; 
+  passwordHash: string; // ← Changé de password à passwordHash
 
   @IsString()
   @IsNotEmpty()
